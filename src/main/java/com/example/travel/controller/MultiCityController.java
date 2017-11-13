@@ -34,17 +34,17 @@ public class MultiCityController
 			Thread.sleep(2000);
 			WebElement elemento = (new WebDriverWait(driver, 60))
 					.until(ExpectedConditions.presenceOfElementLocated(By
-							.className("DQX2Q1B-d-Ab")));
+							.className("LJV2HGB-d-Ab")));
 			elemento.click();
 		}
 		Thread.sleep(2000);
 
 		List<WebElement> detalhesVoo = (new WebDriverWait(driver, 12))
 				.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By
-						.className("DQX2Q1B-bc-h")));
+						.className("LJV2HGB-dc-h")));
 		List<WebElement> nomeVoo = (new WebDriverWait(driver, 12))
 				.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By
-						.className("DQX2Q1B-bc-f")));
+						.className("LJV2HGB-dc-f")));
 		
 		int i = 0;
 		for (WebElement elemento : detalhesVoo) {
@@ -74,7 +74,7 @@ public class MultiCityController
 		dCaps.setVersion("59.0.3071.115");
     	dCaps.setCapability(
 				PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-				"M:\\TRAVEL\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+				"/home/weslei.dias/travel/sistema/phantom/phantomjs");
     	WebDriver driver = new PhantomJSDriver(dCaps);
     	return driver;    	
     }
