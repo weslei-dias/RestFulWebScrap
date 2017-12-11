@@ -1,6 +1,7 @@
 package com.example.travel.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,10 +27,80 @@ public class MultiCityController
 	public List<Object> getDetalhesVoos(@RequestParam("url") String url,
 			@RequestParam("qtdeUrls") int qtdeUrls) throws InterruptedException {
 		List<Object> detalhes = new ArrayList<Object>();
+		
+		if(qtdeUrls > 5) {
+			String[] urlFormatada =  url.split("\\*");
+			System.out.println(urlFormatada);
+			
+			String primeiraUrl = urlFormatada[0];
+			
+			String ultimaUrl = urlFormatada[urlFormatada.length - 1];
+			
+			String antepenultimaUrl = urlFormatada[urlFormatada.length - 2];
+			
+			String urlPrimeiroUltimo = null;
+			String urlMiolo = "";
+			int qtdeMiolo = 0;
+			
+			for (String valor : urlFormatada) {
+				
+				if (valor.equals(primeiraUrl)) {
+					
+					String[] arrayPrimeiraUrl = primeiraUrl.split("\\=");
+					urlPrimeiroUltimo = arrayPrimeiraUrl[1];
+					
+				}else if (valor.equals(ultimaUrl)) {
+					String[] arrayUltimaUrl = ultimaUrl.split(";");
+					urlPrimeiroUltimo += "*" + arrayUltimaUrl[0];
+				}else {
+					if (valor.equals(antepenultimaUrl)) {
+						urlMiolo += valor;
+					}else {
+						urlMiolo += valor + "*";
+					}
+					qtdeMiolo++;
+				}
+				
+				
+			}
+			
+			String urlIdaEVolta = "https://www.google.com.br/flights/#search;iti=" + urlPrimeiroUltimo + ";tt=m";
+			WebDriver driverIdaEVolta = instanciarDriver();
+			driverIdaEVolta.get(urlIdaEVolta);
+			List<Object> detalhesIdaEVolta =  getMioloDestinos(2, driverIdaEVolta);
+			
+			Object firstItem = detalhesIdaEVolta.get(0);
+			Object lastItem = detalhesIdaEVolta.get(1);
+			
+			String urlDestinos = "https://www.google.com.br/flights/#search;iti=" + urlMiolo + ";tt=m";
+			WebDriver driverMiolo = instanciarDriver();
+			driverMiolo.get(urlDestinos);
+			List<Object> detalhesMiolo =  getMioloDestinos(qtdeMiolo, driverMiolo);
+			driverMiolo.close();
+			List<Object> novosDetalhes = new ArrayList<Object>();
+			novosDetalhes.add(firstItem);
+			for (Object object : detalhesMiolo) {
+				novosDetalhes.add(object);
+			}
+			novosDetalhes.add(lastItem);
+			detalhes = novosDetalhes;
+			
+			
+		}else {
+			WebDriver driver = instanciarDriver();
+			driver.get(url);
+			List<Object> detalhesUrl =  getMioloDestinos(qtdeUrls, driver);
+			detalhes = detalhesUrl;
+		}
 
-		WebDriver driver = instanciarDriver();
-		driver.get(url);
+		return detalhes;
+	}
 
+	private List<Object> getMioloDestinos(int qtdeUrls, WebDriver driver) throws InterruptedException {
+		
+		List<Object> detalhes = new ArrayList<Object>();
+
+		
 		for (int i = 0; i < qtdeUrls; i++) {
 			Thread.sleep(2000);
 			WebElement elemento = (new WebDriverWait(driver, 60))
@@ -59,7 +130,7 @@ public class MultiCityController
 		}
 
 		driver.close();
-
+		
 		return detalhes;
 	}
     
@@ -75,7 +146,7 @@ public class MultiCityController
     	dCaps.setCapability(
 				PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				"/home/weslei.dias/travel/sistema/phantom/phantomjs");
-    	WebDriver driver = new PhantomJSDriver(dCaps);
+    	WebDriver driver = new FirefoxDriver();
     	return driver;    	
     }
     
