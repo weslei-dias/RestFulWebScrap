@@ -76,7 +76,6 @@ public class MultiCityController
 			WebDriver driverMiolo = instanciarDriver();
 			driverMiolo.get(urlDestinos);
 			List<Object> detalhesMiolo =  getMioloDestinos(qtdeMiolo, driverMiolo);
-			driverMiolo.close();
 			List<Object> novosDetalhes = new ArrayList<Object>();
 			novosDetalhes.add(firstItem);
 			for (Object object : detalhesMiolo) {
