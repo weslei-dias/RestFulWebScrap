@@ -146,7 +146,7 @@ public class MultiCityController
     	dCaps.setCapability(
 				PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				"/home/weslei.dias/travel/sistema/phantom/phantomjs");
-    	WebDriver driver = new FirefoxDriver();
+    	WebDriver driver = new PhantomJSDriver(dCaps);
     	return driver;    	
     }
     
